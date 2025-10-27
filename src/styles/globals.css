@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark mode prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #2E3447; /* Lighter charcoal for dark mode */
+    --foreground: #E8ECEF; /* Light gray for text */
+  }
+}
+
+/* Body styles */
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Utility for text balance */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Base layer for color variables */
+@layer base {
+  :root {
+    --background: 40 20% 98%; /* #F9F5F0, creamy off-white */
+    --foreground: 240 30% 20%; /* #2E3A59, deep navy */
+    --card: 40 15% 95%; /* #F0ECE5 */
+    --card-foreground: 240 30% 20%; /* #2E3A59 */
+    --popover: 40 15% 95%; /* #F0ECE5 */
+    --popover-foreground: 240 30% 20%; /* #2E3A59 */
+    --primary: 10 80% 55%; /* #F0544F, lively coral */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 180 40% 60%; /* #6DB1BF, soft teal */
+    --secondary-foreground: 240 30% 20%; /* #2E3A59 */
+    --muted: 40 10% 90%; /* #E6E3DB */
+    --muted-foreground: 240 20% 40%; /* #666B85 */
+    --accent: 50 90% 55%; /* #FFC107, bright yellow */
+    --accent-foreground: 240 30% 20%; /* #2E3A59 */
+    --destructive: 0 70% 45%; /* #C0392B */
+    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+    --border: 40 10% 85%; /* #D9D6CF */
+    --input: 40 10% 85%; /* #D9D6CF */
+    --ring: 10 80% 55%; /* #F0544F */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 225 15% 24%; /* #2E3447, lighter charcoal */
+    --foreground: 210 20% 95%; /* #E8ECEF, light gray */
+    --card: 225 15% 28%; /* #3B4259, slightly lighter charcoal */
+    --card-foreground: 210 20% 95%; /* #E8ECEF */
+    --popover: 225 15% 28%; /* #3B4259 */
+    --popover-foreground: 210 20% 95%; /* #E8ECEF */
+    --primary: 10 85% 60%; /* #FF6B6B, vibrant coral */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 180 50% 65%; /* #7CC0CC, brighter teal */
+    --secondary-foreground: 210 20% 95%; /* #E8ECEF */
+    --muted: 225 15% 32%; /* #48506D */
+    --muted-foreground: 225 10% 70%; /* #A3AFC7 */
+    --accent: 50 95% 60%; /* #FFCA28, vivid yellow */
+    --accent-foreground: 240 30% 20%; /* #2E3A59 */
+    --destructive: 0 65% 45%; /* #CC3F33 */
+    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+    --border: 225 15% 35%; /* #535C7A */
+    --input: 225 15% 35%; /* #535C7A */
+    --ring: 10 85% 60%; /* #FF6B6B */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(var(--primary), 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(var(--primary), 0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--primary), 0); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes glow {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
+  100% { filter: brightness(1); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.8s ease-out forwards;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+/* Components */
+@layer components {
+  .container {
+    @apply mx-auto px-4 md:px-6 lg:px-8 max-w-7xl w-full;
+  }
+
+  .product-card {
+    @apply bg-card text-card-foreground rounded-lg shadow-md hover:shadow-lg transition-shadow p-4;
+  }
+
+  .product-card:hover {
+    @apply animate-glow;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground rounded-md px-6 py-2 hover:bg-opacity-90 transition animate-pulse-slow;
+  }
+
+  .promo-banner {
+    @apply bg-accent text-accent-foreground p-4 rounded-md animate-slideInRight;
+  }
+
+  .filter-btn {
+    @apply bg-secondary text-secondary-foreground rounded-md px-4 py-2 hover:bg-opacity-80 transition;
+  }
+}

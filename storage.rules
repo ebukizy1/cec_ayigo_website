@@ -1,0 +1,13 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      // Allow public read access
+      allow read: true;
+      // Allow write access for authenticated users
+      allow write: if request.auth != null;
+      // Allow delete for authenticated users
+      allow delete: if request.auth != null;
+    }
+  }
+}
