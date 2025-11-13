@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Poppins } from "next/font/google";
 import Head from "next/head";
+import Script from "next/script";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -13,67 +14,6 @@ const poppins = Poppins({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    // --- OpenWidget Integration ---
-    const openWidgetScript = document.createElement("script");
-    openWidgetScript.innerHTML = `
-      window.__ow = window.__ow || {};
-      window.__ow.organizationId = "5fd06b29-7fba-40ed-8dfa-55a46c8aef6d";
-      window.__ow.integration_name = "manual_settings";
-      window.__ow.product_name = "openwidget";   
-      ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[OpenWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.openwidget.com/openwidget.js",t.head.appendChild(n)}};!n.__ow.asyncInit&&e.init(),n.OpenWidget=n.OpenWidget||e}(window,document,[].slice))
-    `;
-    openWidgetScript.async = true;
-    document.body.appendChild(openWidgetScript);
-
-    // --- TikTok Pixel Integration ---
-    const tiktokScript = document.createElement("script");
-    tiktokScript.innerHTML = `
-      !function (w, d, t) {
-        w.TiktokAnalyticsObject = t;
-        var ttq = w[t] = w[t] || [];
-        ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie"];
-        ttq.setAndDefer = function (t, e) {
-          t[e] = function () {
-            t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
-          };
-        };
-        for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
-        ttq.instance = function (t) {
-          var e = ttq._i[t] || [];
-          for (var n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]);
-          return e;
-        };
-        ttq.load = function (e, n) {
-          var i = "https://analytics.tiktok.com/i18n/pixel/events.js";
-          ttq._i = ttq._i || {};
-          ttq._i[e] = [];
-          ttq._i[e]._u = i;
-          ttq._t = ttq._t || {};
-          ttq._t[e] = +new Date();
-          ttq._o = ttq._o || {};
-          ttq._o[e] = n || {};
-          var o = document.createElement("script");
-          o.type = "text/javascript";
-          o.async = true;
-          o.src = i + "?sdkid=" + e + "&lib=" + t;
-          var a = document.getElementsByTagName("script")[0];
-          a.parentNode.insertBefore(o, a);
-        };
-        ttq.load('D4AG1DRC77U1BLONRQ70'); // 👉 replace with your TikTok Pixel ID
-        ttq.page();
-      }(window, document, 'ttq');
-    `;
-    tiktokScript.async = true;
-    document.body.appendChild(tiktokScript);
-
-    // Cleanup on unmount
-    return () => {
-      document.body.removeChild(openWidgetScript);
-      document.body.removeChild(tiktokScript);
-    };
-  }, []);
-
   return (
     <>
       <Head>
@@ -84,10 +24,69 @@ export default function App({ Component, pageProps }: AppProps) {
             height="1"
             width="1"
             style={{ display: "none" }}
-            src={`https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D4AG1DRC77U1BLONRQ70`}
+            src="https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D4AG1DRC77U1BLONRQ70"
           />
         </noscript>
       </Head>
+
+      {/* TikTok Pixel - Using Next.js Script component for better control */}
+      <Script
+        id="tiktok-pixel"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            !function (w, d, t) {
+              w.TiktokAnalyticsObject = t;
+              var ttq = w[t] = w[t] || [];
+              ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie"];
+              ttq.setAndDefer = function (t, e) {
+                t[e] = function () {
+                  t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+                };
+              };
+              for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+              ttq.instance = function (t) {
+                var e = ttq._i[t] || [];
+                for (var n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]);
+                return e;
+              };
+              ttq.load = function (e, n) {
+                var i = "https://analytics.tiktok.com/i18n/pixel/events.js";
+                ttq._i = ttq._i || {};
+                ttq._i[e] = [];
+                ttq._i[e]._u = i;
+                ttq._t = ttq._t || {};
+                ttq._t[e] = +new Date();
+                ttq._o = ttq._o || {};
+                ttq._o[e] = n || {};
+                var o = document.createElement("script");
+                o.type = "text/javascript";
+                o.async = true;
+                o.src = i + "?sdkid=" + e + "&lib=" + t;
+                var a = document.getElementsByTagName("script")[0];
+                a.parentNode.insertBefore(o, a);
+              };
+              ttq.load('D4AG1DRC77U1BLONRQ70');
+              ttq.page();
+            }(window, document, 'ttq');
+          `,
+        }}
+      />
+
+      {/* OpenWidget - Using Next.js Script component */}
+      <Script
+        id="openwidget"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.__ow = window.__ow || {};
+            window.__ow.organizationId = "5fd06b29-7fba-40ed-8dfa-55a46c8aef6d";
+            window.__ow.integration_name = "manual_settings";
+            window.__ow.product_name = "openwidget";   
+            ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[OpenWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.openwidget.com/openwidget.js",t.head.appendChild(n)}};!n.__ow.asyncInit&&e.init(),n.OpenWidget=n.OpenWidget||e}(window,document,[].slice))
+          `,
+        }}
+      />
 
       <main className={`${poppins.variable} font-sans`}>
         <Layout>
