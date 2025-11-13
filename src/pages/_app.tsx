@@ -84,7 +84,7 @@ export default function App({ Component, pageProps }: AppProps) {
             height="1"
             width="1"
             style={{ display: "none" }}
-            src={`https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=YOUR_TIKTOK_PIXEL_ID`}
+            src={`https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D4AG1DRC77U1BLONRQ70`}
           />
         </noscript>
       </Head>
