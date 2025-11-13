@@ -18,6 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="facebook-domain-verification" content="5zd5smm7qzfhr8f72w8gfrfpuuiym7" />
         {/* TikTok Pixel noscript fallback */}
         <noscript>
           <img
