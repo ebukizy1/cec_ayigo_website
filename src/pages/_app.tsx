@@ -60,7 +60,7 @@ export default function App({ Component, pageProps }: AppProps) {
           var a = document.getElementsByTagName("script")[0];
           a.parentNode.insertBefore(o, a);
         };
-        ttq.load('YOUR_TIKTOK_PIXEL_ID'); // 👉 replace with your TikTok Pixel ID
+        ttq.load('D4AG1DRC77U1BLONRQ70'); // 👉 replace with your TikTok Pixel ID
         ttq.page();
       }(window, document, 'ttq');
     `;
