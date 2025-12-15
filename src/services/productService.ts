@@ -40,7 +40,7 @@ export const productService = {
       const productsQuery = query(
         collection(db, 'products'),
         where('featured', '==', true),
-        orderBy('createdAt', 'desc'),
+        // orderBy('createdAt', 'desc'),
         limit(limitCount)
       );
       

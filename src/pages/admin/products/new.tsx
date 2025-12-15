@@ -14,6 +14,9 @@ import { db, storage } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { productService } from '@/services/productService';
+import { getAuth } from "firebase/auth";
+import { useEffect } from "react";
+
 
 const CATEGORIES = [
   { value: "All", label: "All Categories" },
@@ -172,7 +175,6 @@ export default function NewProductPage() {
         specifications: specificationsObject,
         images: imageUrls
       };
-      
       await productService.createProduct(productData);
       
       // Show success message
@@ -203,7 +205,14 @@ export default function NewProductPage() {
     }
   };
 
-  return (
+
+useEffect(() => {
+  const auth = getAuth();
+  console.log("Current user:", auth.currentUser);
+
+}, []);
+
+  return ( 
     <>
       <Head>
         <title>Add New Product | Emax-Electrical - Shop Easy</title>
