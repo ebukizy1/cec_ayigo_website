@@ -21,13 +21,15 @@ export function Header() {
   const { cartCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const envLogo = (process.env.NEXT_PUBLIC_LOGO_PATH || "").trim();
   const logoCandidates = [
-    "/image/logo.svg",
+    envLogo || "",
     "/image/logo.png",
     "/image/logo.jpg",
+    "/image/logo.svg",
     "/image/e342f35ac5c6f9962be88a44357aa672_exif.jpg",
     "/favicon.ico"
-  ];
+  ].filter(Boolean);
   const [logoIdx, setLogoIdx] = useState(0);
 
   const handleAdminLogin = () => {
@@ -76,7 +78,7 @@ export function Header() {
               {/* CEC AYIGO Logo Image */}
               <div className="relative">
                 <Image
-                  src={`${logoCandidates[logoIdx]}?v=${ASSET_VERSION}`}
+                  src={`${logoCandidates[logoIdx]}${logoCandidates[logoIdx].startsWith('http') ? '' : `?v=${ASSET_VERSION}`}`}
                   alt="CEC AYIGO Logo"
                   width={180}
                   height={48}
