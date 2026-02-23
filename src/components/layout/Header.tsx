@@ -21,6 +21,14 @@ export function Header() {
   const { cartCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const logoCandidates = [
+    "/image/logo.svg",
+    "/image/logo.png",
+    "/image/logo.jpg",
+    "/image/e342f35ac5c6f9962be88a44357aa672_exif.jpg",
+    "/favicon.ico"
+  ];
+  const [logoIdx, setLogoIdx] = useState(0);
 
   const handleAdminLogin = () => {
     router.push('/admin/login');
@@ -55,18 +63,6 @@ export function Header() {
           {/* Left - CEC AYIGO Logo */}
           <Link href="/" className="flex-shrink-0 group">
             <div className="relative flex items-center gap-2">
-              {/* Glow Effect */}
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-r from-orange-400/20 via-pink-400/20 to-purple-500/20 rounded-xl blur-md opacity-0 group-hover:opacity-100 transition-all duration-300"
-                animate={{ 
-                  background: [
-                    "radial-gradient(circle, rgba(251,146,60,0.2), rgba(236,72,153,0.2), rgba(168,85,247,0.2))",
-                    "radial-gradient(circle, rgba(168,85,247,0.2), rgba(236,72,153,0.2), rgba(251,146,60,0.2))",
-                    "radial-gradient(circle, rgba(251,146,60,0.2), rgba(234, 67, 150, 0.2), rgba(168,85,247,0.2))"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-              />
               
               {/* Animated A Icon */}
               {/* <motion.div 
@@ -80,19 +76,14 @@ export function Header() {
               {/* CEC AYIGO Logo Image */}
               <div className="relative">
                 <Image
-                  src={`/image/hf_20260222_132151_14fc8fa6-2cbf-4044-a776-3476995004ef - Edited.png?v=${ASSET_VERSION}`}
+                  src={`${logoCandidates[logoIdx]}?v=${ASSET_VERSION}`}
                   alt="CEC AYIGO Logo"
                   width={180}
                   height={48}
-                  className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-all duration-300 brightness-110 contrast-110 saturate-110 drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.12)]"
+                  className="h-10 sm:h-12 md:h-12 w-auto object-contain transition-all duration-300 brightness-110 contrast-110 saturate-110 drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.12)]"
                   priority
                   unoptimized
-                />
-                {/* Shine Effect */}
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 rounded"
-                  animate={{ x: ['-100%', '200%'] }}
-                  transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+                  onError={() => setLogoIdx((i) => Math.min(i + 1, logoCandidates.length - 1))}
                 />
               </div>
             </div>

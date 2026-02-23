@@ -153,7 +153,9 @@ export function HeroSection() {
     : 0;
 
   return (
-    <section className='relative w-full min-h-screen bg-white overflow-hidden'>
+    <section className='relative w-full min-h-screen bg-gradient-to-b from-orange-50 via-white to-orange-50 overflow-hidden'>
+      <div className="pointer-events-none absolute -top-24 -left-20 w-80 h-80 bg-orange-100/30 rounded-full blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -right-16 w-96 h-96 bg-orange-100/20 rounded-full blur-3xl" />
 
       <div className='container mx-auto px-4 py-8 md:py-12 lg:py-16 relative z-10'>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center'>
@@ -168,7 +170,7 @@ export function HeroSection() {
             
             {/* Brand Header - Compact */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 via-pink-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg">
                 <Sun className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -184,47 +186,146 @@ export function HeroSection() {
             {/* Main Headline - Tighter Spacing */}
             <div className="space-y-3">
               <h1 className='text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight'>
-                Power Your Home with
-                <motion.span 
-                  className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600"
-                  animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-                  transition={{ duration: 5, repeat: Infinity }}
-                  style={{ backgroundSize: '300% 300%' }}
-                >
-                  Clean Solar Energy
-                </motion.span>
+                Reliable Solar, Delivered
               </h1>
               
-              <p className='text-lg text-gray-700 leading-relaxed max-w-xl'>
-                Premium solar solutions with{' '}
-                <span className="font-semibold text-orange-600">professional installation.</span>
-                {' '}Trusted across Lagos, Nigeria.
+              <p className='text-base md:text-lg text-gray-700 leading-relaxed max-w-xl'>
+                Quality systems. Fast installation. Lagos-wide support.
               </p>
             </div>
 
-            {/* Key Benefits - Compact Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { icon: Sun, title: "Solar Systems", subtitle: "Complete packages" },
-                { icon: Zap, title: "Quality Inverters", subtitle: "Hybrid & Pure sine" },
-                { icon: Shield, title: "2-Year Warranty", subtitle: "Quality guaranteed" },
-                { icon: Phone, title: "Free Quote", subtitle: "Expert consultation" }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-white/80 backdrop-blur-sm border border-white/60 p-3 rounded-xl shadow-sm hover:shadow-md transition-all group cursor-pointer"
-                  whileHover={{ scale: 1.03, y: -3 }}
-                >
-                  <div className={`w-9 h-9 bg-gradient-to-r ${index % 2 === 0 ? 'from-orange-500 to-pink-500' : 'from-blue-500 to-purple-500'} rounded-lg flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-shadow`}>
-                    <item.icon className="h-4 w-4 text-white" />
+            {/* Spacer for visual rhythm */}
+            <div className="h-2" />
+
+            <motion.div 
+              className='relative block lg:hidden'
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="relative bg-white rounded-3xl p-6 shadow-xl border border-gray-100 overflow-hidden">
+                {products.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevSlide}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-all"
+                      aria-label="Previous product"
+                    >
+                      <ChevronLeft className="h-5 w-5 text-gray-700" />
+                    </button>
+                    <button
+                      onClick={nextSlide}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-all"
+                      aria-label="Next product"
+                    >
+                      <ChevronRight className="h-5 w-5 text-gray-700" />
+                    </button>
+                  </>
+                )}
+
+                <div className="relative h-64 rounded-2xl overflow-hidden bg-gray-50 mb-5">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentProduct.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.4 }}
+                      className="relative w-full h-full"
+                    >
+                      {!imageLoaded[currentProduct.id] && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                          <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      )}
+                      <div className={`relative w-full h-full ${imageLoaded[currentProduct.id] ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
+                        <Image
+                          src={currentProduct.images[0]}
+                          alt={currentProduct.name}
+                          fill
+                          sizes="100vw"
+                          className="object-contain p-6"
+                          priority={currentSlide === 0}
+                          quality={85}
+                          onLoadingComplete={() => handleImageLoad(currentProduct.id)}
+                          placeholder="blur"
+                          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAB8H/9k="
+                        />
+                      </div>
+
+                      {discountPercent > 0 && (
+                        <motion.div 
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-2 rounded-full text-sm font-bold shadow-lg z-10"
+                        >
+                          {discountPercent}% OFF
+                        </motion.div>
+                      )}
+
+                      {currentProduct.category && (
+                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-md z-10">
+                          {currentProduct.category}
+                        </div>
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-xl font-bold text-gray-900 leading-tight mb-1 truncate">
+                        {currentProduct.name}
+                      </h3>
+                      <div className="flex items-baseline gap-2">
+                        <div className="text-3xl font-extrabold text-orange-600">
+                          ₦{(currentProduct.discountedPrice || currentProduct.price).toLocaleString()}
+                        </div>
+                        {currentProduct.discountedPrice && (
+                          <div className="text-sm text-gray-500 line-through font-medium">
+                            ₦{currentProduct.price.toLocaleString()}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-xs text-green-700 font-bold bg-green-50 px-3 py-1.5 rounded-full border border-green-200 whitespace-nowrap">
+                      In Stock
+                    </div>
                   </div>
-                  <div className="text-sm font-bold text-gray-900">
-                    {item.title}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleAddToCart(currentProduct)}
+                    className="w-full bg-orange-400 hover:bg-orange-500 text-white py-4 rounded-full font-medium shadow-sm hover:shadow transition-colors flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    Add to Cart
+                    <ArrowRight className="h-4 w-4" />
+                  </motion.button>
+                </div>
+
+                {products.length > 1 && (
+                  <div className="flex justify-center gap-1.5 mt-5">
+                    {products.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setCurrentSlide(index);
+                          setIsAutoPlaying(false);
+                        }}
+                        className={`h-1.5 rounded-full transition-all ${
+                          index === currentSlide 
+                            ? 'bg-orange-400 w-8' 
+                            : 'bg-gray-300 w-1.5 hover:bg-gray-400'
+                        }`}
+                        aria-label={`Go to slide ${index + 1}`}
+                      />
+                    ))}
                   </div>
-                  <div className="text-xs text-gray-600">{item.subtitle}</div>
-                </motion.div>
-              ))}
-            </div>
+                )}
+              </div>
+            </motion.div>
 
             {/* CTA Buttons */}
             <div className='flex flex-col sm:flex-row gap-3 pt-2'>
@@ -232,30 +333,30 @@ export function HeroSection() {
                 whileHover={{ scale: 1.03 }} 
                 whileTap={{ scale: 0.98 }}
                 onClick={handleShopNow}
-                className='w-full sm:w-auto bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-8 py-4 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group'
+                className='w-full sm:w-auto bg-orange-400 hover:bg-orange-500 text-white px-8 py-4 rounded-full font-medium text-base shadow-sm hover:shadow transition-colors flex items-center justify-center gap-2'
               >
                 <ShoppingCart className='h-5 w-5' />
-                Shop Solar Products
-                <ArrowRight className='h-5 w-5 group-hover:translate-x-1 transition-transform' />
+                Shop Now
+                <ArrowRight className='h-5 w-5' />
               </motion.button>
               
               <motion.button 
                 whileHover={{ scale: 1.03 }} 
                 whileTap={{ scale: 0.98 }}
                 onClick={() => window.location.href = 'tel:+2348147254399'}
-                className='w-full sm:w-auto border-2 border-orange-500 bg-white/90 backdrop-blur-sm hover:bg-white text-orange-600 px-8 py-4 rounded-xl font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2'
+                className='w-full sm:w-auto border border-orange-200 bg-white hover:bg-orange-50 text-orange-700 px-8 py-4 rounded-full font-medium text-base shadow-sm hover:shadow transition-colors flex items-center justify-center gap-2'
               >
                 <Phone className='h-5 w-5' />
-                Call Us Now
+                Call Now
               </motion.button>
             </div>
 
             {/* Trust Indicators - Compact */}
-            <div className='flex flex-wrap items-center gap-4 pt-4 border-t border-white/40'>
+            <div className='flex flex-wrap items-center gap-4 pt-4 border-t border-gray-100'>
               {[
-                { text: "10,000+ Customers" },
-                { text: "100% Authentic" },
-                { text: "Same-Day Delivery" }
+                { text: "Trusted Customers" },
+                { text: "Genuine Products" },
+                { text: "Fast Delivery" }
               ].map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
@@ -269,7 +370,7 @@ export function HeroSection() {
           
           {/* Right Content - Sleeker Product Card */}
           <motion.div 
-            className='relative'
+            className='relative hidden lg:block'
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -334,7 +435,7 @@ export function HeroSection() {
                       <motion.div 
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-2 rounded-full text-sm font-bold shadow-lg z-10"
+                        className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-2 rounded-full text-sm font-semibold shadow z-10"
                       >
                         {discountPercent}% OFF
                       </motion.div>
@@ -381,17 +482,17 @@ export function HeroSection() {
                   whileHover={{ scale: 1.02 }} 
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleAddToCart(currentProduct)}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-medium shadow hover:shadow-md transition-colors flex items-center justify-center gap-2"
                 >
                   <ShoppingCart className="h-5 w-5" />
                   Add to Cart
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="h-4 w-4" />
                 </motion.button>
               </div>
 
               {/* Slide Indicators */}
               {products.length > 1 && (
-                <div className="flex justify-center gap-1.5 mt-5">
+                    <div className="flex justify-center gap-1.5 mt-5">
                   {products.map((_, index) => (
                     <button
                       key={index}
@@ -399,11 +500,11 @@ export function HeroSection() {
                         setCurrentSlide(index);
                         setIsAutoPlaying(false);
                       }}
-                      className={`h-1.5 rounded-full transition-all ${
-                        index === currentSlide 
-                          ? 'bg-gradient-to-r from-orange-500 to-pink-500 w-8' 
-                          : 'bg-gray-300 w-1.5 hover:bg-gray-400'
-                      }`}
+                          className={`h-1.5 rounded-full transition-all ${
+                            index === currentSlide 
+                              ? 'bg-orange-500 w-8' 
+                              : 'bg-gray-300 w-1.5 hover:bg-gray-400'
+                          }`}
                       aria-label={`Go to slide ${index + 1}`}
                     />
                   ))}
