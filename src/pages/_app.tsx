@@ -5,6 +5,9 @@ import type { AppProps } from "next/app";
 import { Poppins } from "next/font/google";
 import Head from "next/head";
 import Script from "next/script";
+import { useEffect } from "react";
+import { auth } from "@/lib/firebase";
+import { signInAnonymously } from "firebase/auth";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -19,6 +22,12 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="facebook-domain-verification" content="5zd5smm7qzfhr8f72w8gfrfpuuiym7" />
       </Head>
+      {useEffect(() => {
+        if (typeof window === "undefined") return;
+        if (!auth.currentUser) {
+          signInAnonymously(auth).catch(() => {});
+        }
+      }, [])}
 
       {/* Google Analytics 4 */}
       <Script

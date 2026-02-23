@@ -33,26 +33,28 @@ export const productService = {
   },
 
   async getFeaturedProducts(limitCount = 6): Promise<Product[]> {
+    // First try server API to support unauthenticated public reads
     try {
-      console.log('Fetching featured products...');
-      
-      // Create a simple query first to avoid index issues
+      const res = await fetch(`/api/products/featured?limit=${encodeURIComponent(String(limitCount))}`);
+      if (res.ok) {
+        const json = (await res.json()) as { products: any[] };
+        if (Array.isArray(json.products)) {
+          return json.products as unknown as Product[];
+        }
+      }
+    } catch {}
+
+    // Fallback to client Firestore (requires read permission)
+    try {
       const productsQuery = query(
         collection(db, 'products'),
         where('featured', '==', true),
-        // orderBy('createdAt', 'desc'),
         limit(limitCount)
       );
-      
       const snapshot = await getDocs(productsQuery);
-      console.log(`Found ${snapshot.docs.length} featured products`);
-      
       if (snapshot.empty) {
-        console.log('No featured products found');
         return [];
       }
-      
-      // Process the data safely
       return snapshot.docs.map(doc => {
         const data = doc.data();
         return {
@@ -74,28 +76,23 @@ export const productService = {
       });
     } catch (error) {
       console.error('Error fetching featured products:', error);
-      throw error; // Throw the error to handle it in the component
+      throw error;
     }
   },
   
   async getAllProducts(): Promise<Product[]> {
     try {
-      const productsQuery = query(
-        collection(db, 'products'),
-        orderBy('createdAt', 'desc')
-      );
-      
-      const snapshot = await getDocs(productsQuery);
-      
-      if (snapshot.empty) {
-        return [];
+      const res = await fetch(`/api/products`);
+      if (res.ok) {
+        const json = await res.json() as { products: any[] };
+        if (Array.isArray(json.products)) return json.products as unknown as Product[];
       }
-      
-      const products = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Product[];
-      
+    } catch {}
+    try {
+      const productsQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(productsQuery);
+      if (snapshot.empty) return [];
+      const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Product[];
       return products;
     } catch (error) {
       console.error('Error fetching all products:', error);
@@ -105,16 +102,16 @@ export const productService = {
   
   async getProductById(id: string): Promise<Product | null> {
     try {
-      const productDoc = await getDoc(doc(db, 'products', id));
-      
-      if (!productDoc.exists()) {
-        return null;
+      const res = await fetch(`/api/products/${encodeURIComponent(id)}`);
+      if (res.ok) {
+        const json = await res.json() as { product?: any };
+        if (json.product) return json.product as unknown as Product;
       }
-      
-      return {
-        id: productDoc.id,
-        ...productDoc.data()
-      } as Product;
+    } catch {}
+    try {
+      const productDoc = await getDoc(doc(db, 'products', id));
+      if (!productDoc.exists()) return null;
+      return { id: productDoc.id, ...productDoc.data() } as Product;
     } catch (error) {
       console.error(`Error fetching product with ID ${id}:`, error);
       return null;
@@ -123,6 +120,14 @@ export const productService = {
   
   async getProductsByCategory(category: string, limitCount = 10): Promise<Product[]> {
     try {
+      const params = new URLSearchParams({ category, limit: String(limitCount) });
+      const res = await fetch(`/api/products/category?${params.toString()}`);
+      if (res.ok) {
+        const json = await res.json() as { products: any[] };
+        if (Array.isArray(json.products)) return json.products as unknown as Product[];
+      }
+    } catch {}
+    try {
       const productsQuery = query(
         collection(db, 'products'),
         where('category', '==', category),
@@ -130,12 +135,8 @@ export const productService = {
         orderBy('createdAt', 'desc'),
         limit(limitCount)
       );
-      
       const snapshot = await getDocs(productsQuery);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Product[];
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Product[];
     } catch (error) {
       console.error(`Error fetching products in category ${category}:`, error);
       return [];

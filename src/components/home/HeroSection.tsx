@@ -11,7 +11,6 @@ import {
   Shield,
   Phone,
   CheckCircle,
-  Sparkles,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -154,110 +153,7 @@ export function HeroSection() {
     : 0;
 
   return (
-    <section className='relative w-full min-h-screen bg-gradient-to-br from-orange-50 via-blue-50 to-purple-100 overflow-hidden'>
-      
-      {/* Background Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div
-          animate={{ x: [0, 100, 0], y: [0, -50, 0], rotate: [0, 180, 360] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-r from-orange-200/30 to-pink-200/30 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ x: [0, -100, 0], y: [0, 100, 0], rotate: [360, 180, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-20 left-20 w-80 h-80 bg-gradient-to-r from-blue-200/40 to-purple-200/30 rounded-full blur-3xl"
-        />
-      </div>
-      
-      {/* Christmas Bonus Banner - Compact Design */}
-      <motion.div 
-        className="relative bg-gradient-to-r from-emerald-700 via-red-600 to-emerald-700 text-white py-2.5 md:py-3 overflow-hidden z-10"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        {/* Animated Gradient Background */}
-        <motion.div
-          className="absolute inset-0"
-          animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          style={{
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-            backgroundSize: '50% 100%'
-          }}
-        />
-
-        {/* Floating Sparkles - Reduced */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute"
-              initial={{ 
-                x: `${15 + i * 17}%`, 
-                y: -20,
-                opacity: 0,
-                scale: 0
-              }}
-              animate={{ 
-                y: ['0%', '120%'],
-                opacity: [0, 1, 0],
-                scale: [0, 1, 0]
-              }}
-              transition={{ 
-                duration: 3,
-                repeat: Infinity,
-                delay: i * 0.6,
-                ease: "easeInOut"
-              }}
-            >
-              <Sparkles className="h-3 w-3 text-yellow-200" />
-            </motion.div>
-          ))}
-        </div>
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="flex items-center justify-center gap-2 md:gap-3">
-            {/* Gift Icon */}
-            <motion.div
-              animate={{ rotate: [0, -10, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-              className="hidden sm:block"
-            >
-              <span className="text-base md:text-lg">🎁</span>
-            </motion.div>
-
-            {/* Main Content - Single Line */}
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <motion.span 
-                className="text-yellow-200 font-black text-sm md:text-base tracking-wide flex items-center gap-1"
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Sparkles className="h-3 w-3 inline sm:hidden" />
-                🎄 CHRISTMAS SPECIAL
-              </motion.span>
-              
-              <span className="text-white/80 font-medium hidden sm:inline">•</span>
-              
-              <span className="text-white font-bold text-xs md:text-sm">
-                <span className="text-yellow-300 text-sm md:text-base font-black">20% OFF</span>
-                <span className="hidden sm:inline"> + Free Install</span>
-              </span>
-            </div>
-
-            {/* Lightning Icon */}
-            <motion.div
-              animate={{ rotate: [0, 10, -10, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, delay: 1 }}
-              className="hidden sm:block"
-            >
-              <span className="text-base md:text-lg">⚡</span>
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
+    <section className='relative w-full min-h-screen bg-white overflow-hidden'>
 
       <div className='container mx-auto px-4 py-8 md:py-12 lg:py-16 relative z-10'>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center'>
@@ -378,7 +274,7 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <div className="relative bg-white/70 backdrop-blur-2xl rounded-3xl p-6 shadow-2xl border border-white/60 overflow-hidden">
+            <div className="relative bg-white rounded-3xl p-6 shadow-xl border border-gray-100 overflow-hidden">
               
               {/* Navigation Arrows */}
               {products.length > 1 && (
@@ -401,7 +297,7 @@ export function HeroSection() {
               )}
 
               {/* Product Display - Optimized Image Loading */}
-              <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50/50 to-white/50 mb-5">
+              <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden bg-gray-50 mb-5">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentProduct.id}

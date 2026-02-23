@@ -15,17 +15,18 @@ export interface BlogPost {
 export const blogService = {
   async getLatestPosts(limitCount = 3): Promise<BlogPost[]> {
     try {
-      const postsQuery = query(
-        collection(db, "blogPosts"),
-        orderBy("date", "desc"),
-        limit(limitCount)
-      );
-      
+      const res = await fetch(`/api/blogs/latest?limit=${encodeURIComponent(String(limitCount))}`);
+      if (res.ok) {
+        const json = await res.json() as { posts: any[] };
+        if (Array.isArray(json.posts)) return json.posts as unknown as BlogPost[];
+      }
+    } catch (error) {
+      console.error("Error fetching latest blog posts:", error);
+    }
+    try {
+      const postsQuery = query(collection(db, "blogPosts"), orderBy("date", "desc"), limit(limitCount));
       const snapshot = await getDocs(postsQuery);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as BlogPost[];
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as BlogPost[];
     } catch (error) {
       console.error("Error fetching latest blog posts:", error);
       return [];
@@ -34,16 +35,18 @@ export const blogService = {
   
   async getPostById(id: string): Promise<BlogPost | null> {
     try {
-      const postDoc = await getDoc(doc(db, "blogPosts", id));
-      
-      if (!postDoc.exists()) {
-        return null;
+      const res = await fetch(`/api/blogs/${encodeURIComponent(id)}`);
+      if (res.ok) {
+        const json = await res.json() as { post?: any };
+        if (json.post) return json.post as unknown as BlogPost;
       }
-      
-      return {
-        id: postDoc.id,
-        ...postDoc.data()
-      } as BlogPost;
+    } catch (error) {
+      console.error(`Error fetching blog post with ID ${id}:`, error);
+    }
+    try {
+      const postDoc = await getDoc(doc(db, "blogPosts", id));
+      if (!postDoc.exists()) return null;
+      return { id: postDoc.id, ...postDoc.data() } as BlogPost;
     } catch (error) {
       console.error(`Error fetching blog post with ID ${id}:`, error);
       return null;
@@ -65,11 +68,16 @@ export const blogService = {
 
   async getAllPosts(): Promise<BlogPost[]> {
     try {
-      const postsQuery = query(
-        collection(db, 'blogPosts'),
-        orderBy('date', 'desc')
-      );
-      
+      const res = await fetch(`/api/blogs`);
+      if (res.ok) {
+        const json = await res.json() as { posts: any[] };
+        if (Array.isArray(json.posts)) return json.posts as unknown as BlogPost[];
+      }
+    } catch (error) {
+      console.error('Error fetching all blog posts:', error);
+    }
+    try {
+      const postsQuery = query(collection(db, 'blogPosts'), orderBy('date', 'desc'));
       const snapshot = await getDocs(postsQuery);
       return snapshot.docs.map(doc => {
         const data = doc.data();

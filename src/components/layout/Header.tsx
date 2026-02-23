@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const ASSET_VERSION = process.env.NEXT_PUBLIC_ASSET_VERSION || "1";
+
 export function Header() {
   const router = useRouter();
   const { cartCount } = useCart();
@@ -78,12 +80,13 @@ export function Header() {
               {/* CEC AYIGO Logo Image */}
               <div className="relative">
                 <Image
-                  src="/image/COLORED.png"
+                  src={`/image/hf_20260222_132151_14fc8fa6-2cbf-4044-a776-3476995004ef - Edited.png?v=${ASSET_VERSION}`}
                   alt="CEC AYIGO Logo"
-                  width={100}
-                  height={32}
-                  className="h-7 sm:h-8 md:h-9 w-auto object-contain transition-all duration-300 group-hover:brightness-110"
+                  width={180}
+                  height={48}
+                  className="h-12 sm:h-14 md:h-16 w-auto object-contain transition-all duration-300 brightness-110 contrast-110 saturate-110 drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.12)]"
                   priority
+                  unoptimized
                 />
                 {/* Shine Effect */}
                 <motion.div 
