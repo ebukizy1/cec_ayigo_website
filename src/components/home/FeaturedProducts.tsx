@@ -386,6 +386,8 @@ export function FeaturedProducts() {
             className="overflow-hidden"
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}
+            onPointerDown={() => setIsAutoPlaying(false)}
+            onTouchStart={() => setIsAutoPlaying(false)}
           >
             <motion.div
               className="flex gap-3 sm:gap-4 md:gap-6"
