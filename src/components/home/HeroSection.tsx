@@ -11,6 +11,7 @@ import {
   Shield,
   Phone,
   CheckCircle,
+  BadgeCheck,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -31,6 +32,7 @@ interface Product {
 export function HeroSection() {
   const router = useRouter();
   const { addToCart } = useCart();
+  const SHOW_PRODUCT = false;
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -38,6 +40,7 @@ export function HeroSection() {
   const [imageLoaded, setImageLoaded] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
+    if (!SHOW_PRODUCT) return;
     const fetchProducts = async () => {
       try {
         const featuredProducts = await productService.getFeaturedProducts(3);
@@ -85,25 +88,27 @@ export function HeroSection() {
       }
     };
     fetchProducts();
-  }, []);
+  }, [SHOW_PRODUCT]);
 
   // Preload next image when slide changes
   useEffect(() => {
+    if (!SHOW_PRODUCT) return;
     if (products.length > 1) {
       const nextIndex = (currentSlide + 1) % products.length;
       const img = new window.Image();
       img.src = products[nextIndex].images[0];
     }
-  }, [currentSlide, products]);
+  }, [SHOW_PRODUCT, currentSlide, products]);
 
   useEffect(() => {
+    if (!SHOW_PRODUCT) return;
     if (products.length > 1 && isAutoPlaying) {
       const timer = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % products.length);
       }, 5000);
       return () => clearInterval(timer);
     }
-  }, [products.length, isAutoPlaying]);
+  }, [SHOW_PRODUCT, products.length, isAutoPlaying]);
 
   const handleShopNow = useCallback(() => {
     router.push('/products');
@@ -139,7 +144,7 @@ export function HeroSection() {
     setImageLoaded(prev => ({ ...prev, [productId]: true }));
   };
 
-  if (loading) {
+  if (SHOW_PRODUCT && loading) {
     return (
       <section className='w-full h-screen bg-gradient-to-br from-orange-50 via-blue-50 to-purple-50 flex items-center justify-center'>
         <div className='w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin' />
@@ -147,18 +152,18 @@ export function HeroSection() {
     );
   }
 
-  const currentProduct = products[currentSlide];
-  const discountPercent = currentProduct.discountedPrice 
+  const currentProduct = SHOW_PRODUCT && products.length > 0 ? products[currentSlide] : undefined as any;
+  const discountPercent = SHOW_PRODUCT && currentProduct?.discountedPrice
     ? Math.round(((currentProduct.price - currentProduct.discountedPrice) / currentProduct.price) * 100)
     : 0;
 
   return (
-    <section className='relative w-full min-h-screen bg-gradient-to-b from-orange-50 via-white to-orange-50 overflow-hidden'>
-      <div className="pointer-events-none absolute -top-24 -left-20 w-80 h-80 bg-orange-100/30 rounded-full blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -right-16 w-96 h-96 bg-orange-100/20 rounded-full blur-3xl" />
+    <section className='relative w-full min-h-[60vh] md:min-h-[70vh] bg-white overflow-hidden'>
+      <div className="pointer-events-none absolute -top-24 -left-20 w-72 h-72 bg-orange-50 rounded-full blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -right-16 w-80 h-80 bg-orange-50 rounded-full blur-3xl" />
 
-      <div className='container mx-auto px-4 py-8 md:py-12 lg:py-16 relative z-10'>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center'>
+      <div className='container mx-auto px-4 py-6 md:py-8 lg:py-10 relative z-10'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center'>
           
           {/* Left Content */}
           <motion.div 
@@ -170,26 +175,27 @@ export function HeroSection() {
             
             {/* Brand Header - Compact */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center shadow">
                 <Sun className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-                  CeC AYIGO
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#1F2933] tracking-tight">
+                  CEC AYIGO AND SONS LIGHTINGS
                 </h2>
-                <p className="text-sm text-gray-600 font-medium">
-                  Solar & Electrical Solutions
-                </p>
+                <div className="mt-1 inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold border border-green-200 w-fit">
+                  <BadgeCheck className="h-4 w-4 text-green-600" />
+                  <span>CAC Verified</span>
+                </div>
               </div>
             </div>
 
             {/* Main Headline - Tighter Spacing */}
             <div className="space-y-3">
-              <h1 className='text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight'>
+              <h1 className='text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1F2933] leading-tight'>
                 Reliable Solar, Delivered
               </h1>
               
-              <p className='text-base md:text-lg text-gray-700 leading-relaxed max-w-xl'>
+              <p className='text-base md:text-lg text-[#475569] leading-relaxed max-w-xl'>
                 Quality systems. Fast installation. Lagos-wide support.
               </p>
             </div>
@@ -197,6 +203,7 @@ export function HeroSection() {
             {/* Spacer for visual rhythm */}
             <div className="h-2" />
 
+            {SHOW_PRODUCT && (
             <motion.div 
               className='relative block lg:hidden'
               initial={{ opacity: 0, y: 30 }}
@@ -326,6 +333,7 @@ export function HeroSection() {
                 )}
               </div>
             </motion.div>
+            )}
 
             {/* CTA Buttons */}
             <div className='flex flex-col sm:flex-row gap-3 pt-2'>
@@ -333,7 +341,7 @@ export function HeroSection() {
                 whileHover={{ scale: 1.03 }} 
                 whileTap={{ scale: 0.98 }}
                 onClick={handleShopNow}
-                className='w-full sm:w-auto bg-orange-400 hover:bg-orange-500 text-white px-8 py-4 rounded-full font-medium text-base shadow-sm hover:shadow transition-colors flex items-center justify-center gap-2'
+                className='w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-medium text-base shadow-sm hover:shadow transition-colors flex items-center justify-center gap-2'
               >
                 <ShoppingCart className='h-5 w-5' />
                 Shop Now
@@ -369,6 +377,7 @@ export function HeroSection() {
           </motion.div>
           
           {/* Right Content - Sleeker Product Card */}
+          {SHOW_PRODUCT && (
           <motion.div 
             className='relative hidden lg:block'
             initial={{ opacity: 0, x: 50 }}
@@ -512,6 +521,7 @@ export function HeroSection() {
               )}
             </div>
           </motion.div>
+          )}
         </div>
       </div>
     </section>

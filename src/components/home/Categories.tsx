@@ -69,26 +69,9 @@ export function CategoriesSection() {
   return (
     <section className='py-16 md:py-20 bg-gradient-to-br from-purple-50 via-blue-50 to-orange-50 relative overflow-hidden'>
       
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <motion.div
-          animate={{ 
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-            rotate: [0, 90, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-20 w-72 h-72 bg-gradient-to-r from-blue-200/30 to-purple-200/30 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ 
-            x: [0, -50, 0],
-            y: [0, 30, 0],
-            rotate: [0, -90, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-20 left-20 w-80 h-80 bg-gradient-to-r from-orange-200/30 to-pink-200/30 rounded-full blur-3xl"
-        />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 right-20 w-72 h-72 bg-orange-100/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-orange-100/20 rounded-full blur-3xl" />
       </div>
 
       <div className='container mx-auto px-4 max-w-6xl relative z-10'>
@@ -102,26 +85,14 @@ export function CategoriesSection() {
           className='text-center mb-12 md:mb-16'
         >
           <motion.div 
-            className='inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-full font-semibold text-sm mb-4 shadow-lg'
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            className='inline-flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full font-semibold text-sm mb-4 shadow'
           >
             <Sparkles className='h-4 w-4' />
-            Shop by Category
+            Explore Categories
           </motion.div>
           
           <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3'>
-            Explore Our
-            <motion.span 
-              className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500"
-              animate={{ 
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-              }}
-              transition={{ duration: 5, repeat: Infinity }}
-              style={{ backgroundSize: '300% 300%' }}
-            >
-              Solar Solutions
-            </motion.span>
+            Explore Our Solar Solutions
           </h2>
           
           <p className='text-gray-600 max-w-2xl mx-auto text-base md:text-lg'>
@@ -196,17 +167,12 @@ export function CategoriesSection() {
         >
           <Link href="/products">
             <motion.button 
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-8 py-4 rounded-xl font-bold text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-medium text-base md:text-lg shadow-sm hover:shadow transition-all duration-300"
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
               <span>View All Products</span>
-              <motion.div
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <ArrowRight className="h-5 w-5" />
-              </motion.div>
+              <ArrowRight className="h-5 w-5" />
             </motion.button>
           </Link>
         </motion.div>

@@ -60,7 +60,6 @@ const BlogCard = ({
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             loading={index < 4 ? "eager" : "lazy"}
             quality={75}
-            unoptimized
           />
           
           {/* Gradient Overlay - Only on hover */}
@@ -195,28 +194,10 @@ export function LatestBlogs({
   }
 
   return (
-    <section className="py-8 md:py-12 lg:py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 relative overflow-hidden">
-      
-      {/* Background Elements - Optimized for mobile */}
-      <div className="absolute inset-0 pointer-events-none opacity-30">
-        <motion.div
-          animate={{ 
-            x: [0, 30, 0],
-            y: [0, -30, 0],
-            rotate: [0, 45, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-10 md:top-20 right-5 md:right-10 w-48 h-48 md:w-64 md:h-64 bg-gradient-to-r from-purple-200/30 to-pink-200/30 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ 
-            x: [0, -30, 0],
-            y: [0, 30, 0],
-            rotate: [0, -45, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-10 md:bottom-20 left-5 md:left-10 w-48 h-48 md:w-64 md:h-64 bg-gradient-to-r from-orange-200/30 to-yellow-200/30 rounded-full blur-3xl"
-        />
+    <section className="py-8 md:py-12 lg:py-16 bg-white relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-70">
+        <div className="absolute top-12 md:top-16 right-6 md:right-12 w-40 h-40 md:w-56 md:h-56 bg-orange-50 rounded-full blur-3xl" />
+        <div className="absolute bottom-12 md:bottom-16 left-6 md:left-12 w-40 h-40 md:w-56 md:h-56 bg-orange-50 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
@@ -230,18 +211,14 @@ export function LatestBlogs({
           className="text-center mb-6 md:mb-8 lg:mb-12"
         >
           <motion.div
-            className="inline-flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-2.5 py-1 md:px-3 md:py-1.5 rounded-full font-semibold text-[10px] md:text-xs mb-2 md:mb-3 shadow-lg"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            className="inline-flex items-center gap-1.5 md:gap-2 bg-orange-500 text-white px-2.5 py-1 md:px-3 md:py-1.5 rounded-full font-semibold text-[10px] md:text-xs mb-2 md:mb-3 shadow"
           >
             <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5" />
             Latest Articles
           </motion.div>
           
           <h2 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-1 md:mb-2">
-            <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-              Latest Insights
-            </span>
+            Latest Insights
           </h2>
           
           <p className="text-gray-600 text-xs md:text-sm lg:text-base max-w-2xl mx-auto px-4">
@@ -278,18 +255,13 @@ export function LatestBlogs({
           >
             <Link href="/blogs">
               <motion.button
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-5 py-2.5 md:px-8 md:py-3.5 rounded-xl font-bold text-sm md:text-base shadow-lg hover:shadow-xl transition-all"
-                whileHover={{ scale: 1.05 }}
+                className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 md:px-8 md:py-3.5 rounded-full font-medium text-sm md:text-base shadow-sm hover:shadow transition-all"
+                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <span className="hidden sm:inline">View All Articles</span>
                 <span className="sm:hidden">View All</span>
-                <motion.div
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
-                </motion.div>
+                <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
               </motion.button>
             </Link>
           </motion.div>

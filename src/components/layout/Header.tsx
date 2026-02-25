@@ -84,7 +84,6 @@ export function Header() {
                   height={48}
                   className="h-10 sm:h-12 md:h-12 w-auto object-contain transition-all duration-300 brightness-110 contrast-110 saturate-110 drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.12)]"
                   priority
-                  unoptimized
                   onError={() => setLogoIdx((i) => Math.min(i + 1, logoCandidates.length - 1))}
                 />
               </div>

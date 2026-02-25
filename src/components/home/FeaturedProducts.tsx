@@ -115,7 +115,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="mb-3 mt-auto">
             {product.discountedPrice ? (
               <div>
-                <div className="text-base sm:text-lg font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                <div className="text-base sm:text-lg font-bold text-orange-600">
                   ₦{product.discountedPrice.toLocaleString()}
                 </div>
                 <div className="text-xs text-gray-500 line-through">
@@ -134,9 +134,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
             onClick={(e) => onAddToCart(product, e)}
             disabled={!product.inStock}
             type="button"
-            className={`w-full py-2 rounded-lg font-semibold text-xs flex items-center justify-center gap-1.5 transition-all ${
+            className={`w-full py-2 rounded-full font-medium text-xs flex items-center justify-center gap-1.5 transition-colors ${
               product.inStock
-                ? "bg-gradient-to-r from-orange-500 to-pink-500 active:from-orange-600 active:to-pink-600 text-white shadow-sm active:scale-95"
+                ? "bg-orange-500 hover:bg-orange-600 text-white shadow-sm"
                 : "bg-gray-200 text-gray-500 cursor-not-allowed"
             }`}
           >
@@ -159,6 +159,7 @@ export function FeaturedProducts() {
   const { addToWishlist, isInWishlist } = useWishlist();
   const containerRef = useRef<HTMLDivElement>(null);
   const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [stepPx, setStepPx] = useState(0);
 
   // Calculate how many products to show based on screen size
   const getVisibleCount = useCallback(() => {
@@ -199,6 +200,18 @@ export function FeaturedProducts() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [getVisibleCount]);
+
+  // Recompute step width when container size or layout changes
+  useEffect(() => {
+    const compute = () => {
+      if (!containerRef.current) return;
+      const containerW = containerRef.current.offsetWidth;
+      setStepPx(containerW / Math.max(visibleCount, 1));
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, [visibleCount, products.length]);
 
   // Auto-play functionality
   useEffect(() => {
@@ -274,6 +287,15 @@ export function FeaturedProducts() {
   };
 
   const maxIndex = Math.max(0, products.length - visibleCount);
+  const clampedIndex = Math.min(currentIndex, maxIndex);
+
+  // Pause autoplay and reset index when there isn't enough to scroll
+  useEffect(() => {
+    if (products.length <= visibleCount) {
+      setIsAutoPlaying(false);
+      if (currentIndex !== 0) setCurrentIndex(0);
+    }
+  }, [products.length, visibleCount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (
@@ -301,28 +323,10 @@ export function FeaturedProducts() {
   }
 
   return (
-    <section className="py-8 sm:py-12 md:py-16 bg-gradient-to-br from-orange-50 via-blue-50 to-purple-50 relative overflow-hidden">
-      
-      {/* Background Elements */}
+    <section className="py-8 sm:py-12 md:py-16 bg-white relative">
       <div className="absolute inset-0 pointer-events-none">
-        <motion.div
-          animate={{ 
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-            rotate: [0, 90, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-10 w-40 h-40 sm:w-64 sm:h-64 bg-gradient-to-r from-orange-200/30 to-pink-200/30 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ 
-            x: [0, -50, 0],
-            y: [0, 30, 0],
-            rotate: [0, -90, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-20 left-10 w-40 h-40 sm:w-64 sm:h-64 bg-gradient-to-r from-blue-200/30 to-purple-200/30 rounded-full blur-3xl"
-        />
+        <div className="absolute top-16 right-10 w-48 h-48 bg-orange-50 rounded-full blur-3xl" />
+        <div className="absolute bottom-16 left-10 w-48 h-48 bg-orange-50 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
@@ -335,19 +339,14 @@ export function FeaturedProducts() {
           className="text-center mb-6 sm:mb-8 md:mb-12"
         >
           <motion.div
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-3 py-1.5 rounded-full font-semibold text-xs mb-3 shadow-lg"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            className="inline-flex items-center gap-2 bg-orange-500 text-white px-3 py-1.5 rounded-full font-semibold text-xs mb-3 shadow"
           >
             <Sparkles className="h-3.5 w-3.5" />
             Featured Products
           </motion.div>
           
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-            Best Selling
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500">
-              Electronics
-            </span>
+            Best Selling Products
           </h2>
           
           <p className="text-gray-600 text-xs sm:text-sm md:text-base max-w-xl mx-auto">
@@ -391,15 +390,12 @@ export function FeaturedProducts() {
             <motion.div
               className="flex gap-3 sm:gap-4 md:gap-6"
               animate={{
-                x: products.length > visibleCount ? `-${currentIndex * (100 / visibleCount)}%` : 0,
+                x: products.length > visibleCount ? -clampedIndex * stepPx : 0,
               }}
               transition={{
                 type: "spring",
                 stiffness: 300,
                 damping: 30,
-              }}
-              style={{
-                width: `${(products.length / visibleCount) * 100}%`,
               }}
             >
               {products.map((product) => (
@@ -427,7 +423,7 @@ export function FeaturedProducts() {
                   }}
                   className={`h-2 rounded-full transition-all ${
                     index === currentIndex
-                      ? 'w-8 bg-gradient-to-r from-orange-500 to-pink-500'
+                      ? 'w-8 bg-orange-500'
                       : 'w-2 bg-gray-300 hover:bg-gray-400'
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
@@ -447,17 +443,12 @@ export function FeaturedProducts() {
           <Link href="/products">
             <motion.button
               type="button"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-6 py-2.5 sm:px-8 sm:py-3 md:py-3.5 rounded-xl font-bold text-sm md:text-base shadow-lg hover:shadow-xl transition-all"
-              whileHover={{ scale: 1.05 }}
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 sm:px-8 sm:py-3 md:py-3.5 rounded-full font-medium text-sm md:text-base shadow-sm hover:shadow transition-all"
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
               <span>View All Products</span>
-              <motion.div
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
-              </motion.div>
+              <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
             </motion.button>
           </Link>
         </motion.div>
