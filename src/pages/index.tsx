@@ -22,7 +22,7 @@ export default function Home() {
         <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
       </Head>
       
-      <div className='min-h-screen'>
+      <div className='min-h-screen bg-[#F8FAFC]'>
         <HeroSection />
         <CategoriesSection />
         <FeaturedProducts />

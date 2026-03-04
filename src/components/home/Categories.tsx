@@ -74,7 +74,7 @@ export function CategoriesSection() {
         <div className="absolute bottom-20 left-20 w-80 h-80 bg-orange-100/20 rounded-full blur-3xl" />
       </div>
 
-      <div className='container mx-auto px-4 max-w-6xl relative z-10'>
+      <div className='container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10'>
         
         {/* Header */}
         <motion.div

@@ -80,6 +80,21 @@ export default function CartPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const whatsappNumber = "2348147254399";
+  const openWhatsApp = () => {
+    const lines = cartItems.map((item) => {
+      const lineTotal = (item.discountedPrice || item.price) * item.quantity;
+      return `${item.name} x ${item.quantity} = ₦${lineTotal.toFixed(2)}`;
+    });
+    const message = [
+      "Hello, I'd like to order:",
+      ...lines,
+      `Total: ₦${total.toFixed(2)}`
+    ].join("\n");
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    if (typeof window !== "undefined") window.open(url, "_blank");
+  };
+
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return; // prevent duplicate submissions
@@ -388,13 +403,20 @@ export default function CartPage() {
                       </div>
                     </div>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="flex flex-col gap-3">
                     <Button 
-                      className="w-full bg-primary hover:bg-primary/90 text-white py-6 flex items-center justify-center gap-2"
+                      className="w-full bg-primary hover:bg-primary/90 text-white py-6 flex items-center justify-center gap-2 rounded-2xl"
                       onClick={() => setCheckoutStep(2)}
                     >
                       Proceed to Checkout
                       <ArrowRight className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full py-6 rounded-2xl"
+                      onClick={openWhatsApp}
+                    >
+                      Chat on WhatsApp
                     </Button>
                   </CardFooter>
                 </Card>
